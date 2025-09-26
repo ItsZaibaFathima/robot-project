@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    environment {
+        VENV_DIR = 'venv'
+        BROWSER_OPTIONS = '--guest'
+    }
+
+    stages {
+        stage('Run Product Tests') {
+            steps {
+                bat "%VENV_DIR%\\Scripts\\robot tests\\product"
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/output.xml, **/report.html, **/log.html', allowEmptyArchive: true
+        }
+        success {
+            build job: 'Checkout_Tests_Pipeline'  // Trigger next downstream
+        }
+    }
+}

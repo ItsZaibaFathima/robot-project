@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    environment {
+        VENV_DIR = 'venv'
+        BROWSER_OPTIONS = '--guest'
+    }
+
+    stages {
+        stage('Run Checkout Tests') {
+            steps {
+                bat "%VENV_DIR%\\Scripts\\robot tests\\checkout"
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/output.xml, **/report.html, **/log.html', allowEmptyArchive: true
+        }
+    }
+}
