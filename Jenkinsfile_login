@@ -1,4 +1,4 @@
-pipeline {
+pipeline { 
     agent any
     environment {
         VENV_DIR = 'venv'
@@ -10,7 +10,7 @@ pipeline {
             steps {
                 bat """
                 if not exist %VENV_DIR% python -m venv %VENV_DIR%
-                %VENV_DIR%\\Scripts\\pip install --upgrade pip
+                %VENV_DIR%\\Scripts\\python.exe -m pip install --upgrade pip
                 %VENV_DIR%\\Scripts\\pip install robotframework selenium robotframework-seleniumlibrary
                 """
             }
@@ -18,7 +18,8 @@ pipeline {
 
         stage('Run Valid Login Test Only') {
             steps {
-                bat "%VENV_DIR%\\Scripts\\robot --test 'Valid User Login' tests\\login\\valid_login.robot"
+                // Corrected for Windows: double quotes and escaped backslashes
+                bat "\"%VENV_DIR%\\Scripts\\robot\" --test \"Valid User Login\" \"tests\\login\\valid_login.robot\""
             }
         }
     }
