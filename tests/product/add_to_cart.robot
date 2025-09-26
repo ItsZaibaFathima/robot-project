@@ -4,23 +4,24 @@ Suite Setup    Open Browser To Sauce Demo
 Suite Teardown    Close Browser
 
 *** Variables ***
-${URL}       https://www.saucedemo.com/
-${BROWSER}   chrome
-${USER}      standard_user
-${PASSWORD}  secret_sauce
-${CHROME_OPTS}   --guest
+${URL}           https://www.saucedemo.com/
+${BROWSER}       chrome
+${VALID_USER}    standard_user
+${PASSWORD}      secret_sauce
 
 *** Test Cases ***
 Add Item To Cart
     [Documentation]    Verify that an item can be added to the cart
-    Input Credentials    ${USER}    ${PASSWORD}
+    Input Credentials    ${VALID_USER}    ${PASSWORD}
     Add Item To Cart
     Cart Should Contain    1
     Capture Page Screenshot
 
 *** Keywords ***
 Open Browser To Sauce Demo
-    Open Browser    ${URL}    ${BROWSER}
+    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    Call Method    ${chrome options}    add_argument    --guest
+    Open Browser    ${URL}    ${BROWSER}    options=${chrome options}
     Maximize Browser Window
     Set Selenium Speed    0.5s
 
