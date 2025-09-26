@@ -8,6 +8,7 @@ ${URL}           https://www.saucedemo.com/
 ${BROWSER}       chrome
 ${VALID_USER}    standard_user
 ${PASSWORD}      secret_sauce
+${CHROME_OPTS}   --guest
 
 *** Test Cases ***
 Valid User Login
