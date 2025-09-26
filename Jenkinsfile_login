@@ -26,7 +26,18 @@ pipeline {
 
     post {
         always {
+            // Archive the Robot reports
             archiveArtifacts artifacts: '**/output.xml, **/report.html, **/log.html', allowEmptyArchive: true
+
+            // Publish the report inside Jenkins (requires HTML Publisher Plugin)
+            publishHTML([
+                reportName: 'Robot Framework Report',
+                reportDir: '.',
+                reportFiles: 'report.html',
+                keepAll: true,
+                alwaysLinkToLastBuild: true,
+                allowMissing: false
+            ])
         }
     }
 }
