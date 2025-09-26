@@ -1,8 +1,7 @@
-pipeline {
+pipeline { 
     agent any
     environment {
         VENV_DIR = 'venv'
-        BROWSER_OPTIONS = '--guest'
     }
 
     stages {
@@ -18,7 +17,7 @@ pipeline {
 
         stage('Run Checkout Test Only') {
             steps {
-                bat "%VENV_DIR%\\Scripts\\robot \"tests\\checkout\\complete_checkout.robot\""
+                bat "%VENV_DIR%\\Scripts\\robot tests\\checkout\\complete_checkout.robot"
             }
         }
     }
