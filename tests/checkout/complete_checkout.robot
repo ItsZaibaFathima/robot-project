@@ -6,28 +6,23 @@ Suite Teardown    Close Browser
 *** Variables ***
 ${URL}           https://www.saucedemo.com/
 ${BROWSER}       chrome
-${USER}          standard_user
+${VALID_USER}    standard_user
 ${PASSWORD}      secret_sauce
-${FIRST_NAME}    John
-${LAST_NAME}     Doe
-${ZIP_CODE}      12345
-${CHROME_OPTS}   --guest
 
 *** Test Cases ***
-Complete Checkout
-    [Documentation]    Verify that a user can complete the checkout process
-    Input Credentials    ${USER}    ${PASSWORD}
+Valid Checkout
+    [Documentation]    Verify that a user can complete checkout successfully
+    Input Credentials    ${VALID_USER}    ${PASSWORD}
     Add Item To Cart
-    Go To Cart
-    Proceed To Checkout
-    Fill Checkout Information    ${FIRST_NAME}    ${LAST_NAME}    ${ZIP_CODE}
-    Finish Checkout And Verify
+    Go To Checkout
+    Enter Checkout Info    Zaiba    Fathima    12345
+    Complete Checkout
+    Page Should Contain    THANK YOU FOR YOUR ORDER
+    Capture Page Screenshot
 
 *** Keywords ***
 Open Browser To Sauce Demo
-    ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    Call Method    ${options}    add_argument    ${CHROME_OPTS}
-    Open Browser    ${URL}    ${BROWSER}    options=${options}
+    Open Browser    ${URL}    ${BROWSER}
     Maximize Browser Window
     Set Selenium Speed    0.5s
 
@@ -43,25 +38,16 @@ Add Item To Cart
     Click Button    xpath=//button[@id='add-to-cart-sauce-labs-backpack']
     Wait Until Element Is Visible    class=shopping_cart_link    10s
 
-Go To Cart
+Go To Checkout
     Click Link    class=shopping_cart_link
-    Wait Until Page Contains Element    id=checkout    10s
-
-Proceed To Checkout
     Click Button    id=checkout
-    Wait Until Element Is Visible    id=first-name    10s
 
-Fill Checkout Information
-    [Arguments]    ${first_name}    ${last_name}    ${zip_code}
-    Input Text    id=first-name    ${first_name}
-    Input Text    id=last-name     ${last_name}
-    Input Text    id=postal-code   ${zip_code}
-    Click Button    id=continue
-    Wait Until Element Is Visible    id=finish    10s
+Enter Checkout Info
+    [Arguments]    ${first}    ${last}    ${zip}
+    Input Text    id=first-name    ${first}
+    Input Text    id=last-name     ${last}
+    Input Text    id=postal-code   ${zip}
+    Click Button  id=continue
 
-Finish Checkout And Verify
+Complete Checkout
     Click Button    id=finish
-    Wait Until Element Is Visible    css=h2.complete-header    timeout=10s
-    Page Should Contain Element      css=h2.complete-header
-    Capture Page Screenshot
-
