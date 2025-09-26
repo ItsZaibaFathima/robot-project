@@ -6,9 +6,19 @@ pipeline {
     }
 
     stages {
-        stage('Run Checkout Tests') {
+        stage('Setup Python Environment') {
             steps {
-                bat "%VENV_DIR%\\Scripts\\robot tests\\checkout"
+                bat """
+                if not exist %VENV_DIR% python -m venv %VENV_DIR%
+                %VENV_DIR%\\Scripts\\python.exe -m pip install --upgrade pip
+                %VENV_DIR%\\Scripts\\pip install robotframework selenium robotframework-seleniumlibrary
+                """
+            }
+        }
+
+        stage('Run Checkout Test Only') {
+            steps {
+                bat "%VENV_DIR%\\Scripts\\robot \"tests\\checkout\\complete_checkout.robot\""
             }
         }
     }

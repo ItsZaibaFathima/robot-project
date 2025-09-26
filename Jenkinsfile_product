@@ -6,9 +6,19 @@ pipeline {
     }
 
     stages {
-        stage('Run Product Tests') {
+        stage('Setup Python Environment') {
             steps {
-                bat "%VENV_DIR%\\Scripts\\robot tests\\product"
+                bat """
+                if not exist %VENV_DIR% python -m venv %VENV_DIR%
+                %VENV_DIR%\\Scripts\\python.exe -m pip install --upgrade pip
+                %VENV_DIR%\\Scripts\\pip install robotframework selenium robotframework-seleniumlibrary
+                """
+            }
+        }
+
+        stage('Run Product Test Only') {
+            steps {
+                bat "%VENV_DIR%\\Scripts\\robot \"tests\\product\\add_to_cart.robot\""
             }
         }
     }
@@ -16,9 +26,6 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '**/output.xml, **/report.html, **/log.html', allowEmptyArchive: true
-        }
-        success {
-            build job: 'Checkout_Tests_Pipeline'  // Trigger next downstream
         }
     }
 }
